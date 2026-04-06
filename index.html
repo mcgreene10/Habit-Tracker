@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)file:///C:/Users/mgreene/Downloads/habits_3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Momentum — Habits &amp; Goals</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e10;
+  --surface: #18181c;
+  --surface2: #222228;
+  --surface3: #2a2a32;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0efe8;
+  --text2: #9b9a94;
+  --text3: #5c5b57;
+  --accent: #c8f060;
+  --accent2: #a0d840;
+  --accent-dim: rgba(200,240,96,0.12);
+  --accent-dim2: rgba(200,240,96,0.06);
+  --teal: #5dd4c8;
+  --teal-dim: rgba(93,212,200,0.12);
+  --amber: #f0a030;
+  --amber-dim: rgba(240,160,48,0.12);
+  --coral: #f06060;
+  --coral-dim: rgba(240,96,96,0.12);
+  --blue: #60a8f0;
+  --blue-dim: rgba(96,168,240,0.12);
+  --purple: #a080f0;
+  --purple-dim: rgba(160,128,240,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+  overflow-x: hidden;
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--surface);
+  border-top: 1px solid var(--border2);
+  display: flex;
+  padding: 10px 0 20px;
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.2s;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.nav-btn.active { color: var(--accent); }
+.nav-icon { font-size: 20px; line-height: 1; }
+
+/* HEADER */
+.header {
+  padding: 56px 20px 16px;
+  background: var(--bg);
+}
+.header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.greeting {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--text);
+}
+.greeting span { color: var(--accent); font-style: italic; }
+.date-pill {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  white-space: nowrap;
+}
+
+/* SECTIONS */
+.section { display: none; padding: 0 16px; }
+.section.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.card:active { border-color: var(--border2); }
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 20px 0 10px;
+}
+
+/* HABIT CARD */
+.habit-card { position: relative; overflow: hidden; }
+.habit-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.habit-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.habit-name { font-size: 15px; font-weight: 500; flex: 1; }
+.habit-streak {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.streak-flame { font-size: 14px; }
+
+/* WEEK DOTS */
+.week-row { display: flex; gap: 6px; align-items: center; }
+.week-label { font-size: 10px; color: var(--text3); width: 16px; text-align: center; }
+.week-dot {
+  flex: 1;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  max-width: 36px;
+}
+.week-dot.today { border-color: var(--accent); }
+.week-dot.done { background: var(--accent); border-color: var(--accent); }
+.week-dot.done::after { content: '✓'; color: #111; font-weight: 700; font-size: 11px; }
+
+/* PROGRESS BAR */
+.prog-wrap { height: 4px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+.prog-bar { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+
+/* CALENDAR */
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-title { font-family: 'Instrument Serif', serif; font-size: 22px; }
+.cal-nav { display: flex; gap: 4px; }
+.cal-nav button {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.cal-days-header { display: grid; grid-template-columns: repeat(7,1fr); text-align: center; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 8px; text-transform: uppercase; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 400;
+  position: relative;
+  color: var(--text2);
+}
+.cal-day.other-month { color: var(--text3); }
+.cal-day.today { color: var(--text); font-weight: 600; }
+.cal-day.today::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  border: 1.5px solid var(--accent);
+}
+.cal-day-dots { display: flex; gap: 2px; margin-top: 2px; }
+.cal-dot { width: 4px; height: 4px; border-radius: 50%; }
+.cal-day.has-done { background: var(--accent-dim2); }
+
+/* GOALS */
+.goal-card { }
+.goal-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.goal-icon { font-size: 22px; line-height: 1; padding-top: 2px; }
+.goal-info { flex: 1; }
+.goal-name { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+.goal-sub { font-size: 12px; color: var(--text2); }
+.goal-cat {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 99px;
+}
+.goal-timeline { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.timeline-bar-wrap { flex: 1; height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+.timeline-bar { height: 100%; border-radius: 99px; transition: width 0.4s; }
+.goal-pct { font-size: 13px; font-weight: 600; min-width: 34px; text-align: right; }
+.goal-eta { font-size: 11px; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+.eta-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.goal-actions { display: flex; gap: 6px; margin-top: 12px; }
+.goal-btn {
+  flex: 1; padding: 8px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text); font-size: 13px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: all 0.15s;
+}
+.goal-btn:active { transform: scale(0.97); }
+.goal-btn.primary { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 40px;
+  width: 100%; max-width: 430px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 99px; margin: 0 auto 20px; }
+.modal-title { font-family: 'Instrument Serif', serif; font-size: 20px; margin-bottom: 16px; }
+.field-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; margin-top: 14px; }
+.field-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; transition: border-color 0.2s;
+}
+.field-input:focus { border-color: var(--accent); }
+.emoji-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.emoji-opt {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--surface2); border: 1.5px solid transparent;
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.emoji-opt.selected { border-color: var(--accent); background: var(--accent-dim); }
+.color-picker { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+.color-opt {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 2px solid transparent; cursor: pointer;
+  transition: all 0.15s; position: relative;
+}
+.color-opt.selected::after {
+  content: '✓';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #111; font-size: 14px; font-weight: 700;
+}
+.cat-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.cat-pill {
+  padding: 6px 14px; border-radius: 99px;
+  border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text2); font-size: 13px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+}
+.cat-pill.selected { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.modal-submit {
+  width: 100%; margin-top: 20px; padding: 14px;
+  background: var(--accent); border: none; border-radius: var(--radius-sm);
+  color: #111; font-family: 'DM Sans', sans-serif;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: opacity 0.15s;
+}
+.modal-submit:active { opacity: 0.85; }
+.modal-cancel {
+  width: 100%; margin-top: 8px; padding: 12px;
+  background: none; border: none; color: var(--text2);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; cursor: pointer;
+}
+.select-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 15px;
+  outline: none; appearance: none;
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: 80px; right: 20px;
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--accent);
+  border: none; color: #111;
+  font-size: 26px; font-weight: 300;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(200,240,96,0.3);
+  z-index: 90;
+  transition: transform 0.15s;
+}
+.fab:active { transform: scale(0.93); }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 4px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 10px; text-align: center; }
+.stat-val { font-family: 'Instrument Serif', serif; font-size: 26px; color: var(--accent); line-height: 1; }
+.stat-lbl { font-size: 10px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* LEGEND */
+.cal-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* DELETE BTN */
+.delete-btn {
+  width: 28px; height: 28px; border-radius: 8px;
+  border: 1px solid var(--border); background: none;
+  color: var(--text3); font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.delete-btn:active { background: var(--coral-dim); color: var(--coral); border-color: var(--coral); }
+
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text3); }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-size: 16px; color: var(--text2); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; line-height: 1.5; }
+
+.progress-input-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.prog-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border2); background: var(--surface2);
+  color: var(--text); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+}
+.prog-num {
+  flex: 1; text-align: center;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px; color: var(--text);
+  font-size: 15px; font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="greeting">Your <span>momentum</span><br>starts here.</div>
+    </div>
+    <div class="date-pill" id="date-pill">Mon, Apr 6</div>
+  </div>
+</div>
+
+<!-- SECTIONS -->
+<div id="sec-today" class="section active">
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-val">2/4</div><div class="stat-lbl">Today</div></div>
+    <div class="stat-card"><div class="stat-val">1</div><div class="stat-lbl">Best streak</div></div>
+    <div class="stat-card"><div class="stat-val">1</div><div class="stat-lbl">Goals active</div></div>
+  </div>
+  <div class="section-title">Today's Habits</div>
+  <div id="today-habits"><div class="card habit-card" style="">
+        <div class="habit-top">
+          <div class="habit-icon" style="background:rgba(93,212,200,0.18)">📚</div>
+          <div class="habit-name">Read for 30 min</div>
+          
+        </div>
+        <div class="week-row">
+          <div class="week-dot today" onclick="toggleHabit(1775506421516,&#39;2026-04-06&#39;)" title="M"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-07&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-08&#39;)" title="W"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-09&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-10&#39;)" title="F"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-11&#39;)" title="S"></div><div class="week-dot" onclick="toggleHabit(1775506421516,&#39;2026-04-12&#39;)" title="S"></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:0%;background:#5dd4c8"></div></div>
+      </div><div class="card habit-card" style="">
+        <div class="habit-top">
+          <div class="habit-icon" style="background:rgba(240,96,96,0.18)">💧</div>
+          <div class="habit-name">Avoid Alcohol</div>
+          
+        </div>
+        <div class="week-row">
+          <div class="week-dot today" onclick="toggleHabit(1775506577171,&#39;2026-04-06&#39;)" title="M"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-07&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-08&#39;)" title="W"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-09&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-10&#39;)" title="F"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-11&#39;)" title="S"></div><div class="week-dot" onclick="toggleHabit(1775506577171,&#39;2026-04-12&#39;)" title="S"></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:0%;background:#f06060"></div></div>
+      </div><div class="card habit-card" style="border-color:#a080f0;background:linear-gradient(135deg,rgba(160,128,240,0.18),transparent)">
+        <div class="habit-top">
+          <div class="habit-icon" style="background:rgba(160,128,240,0.18)">😴</div>
+          <div class="habit-name">Out of Bed By 6:30</div>
+          <div class="habit-streak"><span class="streak-flame">🔥</span> 1</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot done today" onclick="toggleHabit(1775506588762,&#39;2026-04-06&#39;)" title="M"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-07&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-08&#39;)" title="W"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-09&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-10&#39;)" title="F"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-11&#39;)" title="S"></div><div class="week-dot" onclick="toggleHabit(1775506588762,&#39;2026-04-12&#39;)" title="S"></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:14%;background:#a080f0"></div></div>
+      </div><div class="card habit-card" style="border-color:#f0a030;background:linear-gradient(135deg,rgba(240,160,48,0.18),transparent)">
+        <div class="habit-top">
+          <div class="habit-icon" style="background:rgba(240,160,48,0.18)">💪</div>
+          <div class="habit-name">Work on the House</div>
+          <div class="habit-streak"><span class="streak-flame">🔥</span> 1</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot done today" onclick="toggleHabit(1775506596303,&#39;2026-04-06&#39;)" title="M"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-07&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-08&#39;)" title="W"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-09&#39;)" title="T"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-10&#39;)" title="F"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-11&#39;)" title="S"></div><div class="week-dot" onclick="toggleHabit(1775506596303,&#39;2026-04-12&#39;)" title="S"></div>
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:14%;background:#f0a030"></div></div>
+      </div></div>
+  <div class="section-title">Goals in Progress</div>
+  <div id="today-goals"><div class="card goal-card">
+    <div class="goal-header">
+      <div class="goal-info">
+        <div class="goal-name">Kitchen Switch and Light Circuits Complete</div>
+        
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="goal-cat" style="background:#5dd4c828;color:#5dd4c8">Health</span>
+        <button class="delete-btn" onclick="deleteGoal(1775506632695)">✕</button>
+      </div>
+    </div>
+    <div class="goal-timeline">
+      <div class="timeline-bar-wrap"><div class="timeline-bar" style="width:0%;background:#5dd4c8"></div></div>
+      <div class="goal-pct" style="color:#5dd4c8">0%</div>
+    </div>
+    <div class="goal-eta"><div class="eta-dot" style="background:#5dd4c8"></div>2 days left · ~50.0% per day</div>
+    <div class="progress-input-row">
+      <button class="prog-btn" onclick="adjustGoal(1775506632695,-10)">−</button>
+      <input class="prog-num" type="number" min="0" max="100" value="0" onchange="updateGoalProgress(1775506632695,+this.value)">
+      <button class="prog-btn" onclick="adjustGoal(1775506632695,10)">+</button>
+    </div>
+  </div></div>
+</div>
+
+<div id="sec-habits" class="section">
+  <div id="all-habits"></div>
+</div>
+
+<div id="sec-calendar" class="section">
+  <div class="card">
+    <div class="cal-header">
+      <div class="cal-title" id="cal-month-title"></div>
+      <div class="cal-nav">
+        <button onclick="calNav(-1)">‹</button>
+        <button onclick="calNav(1)">›</button>
+      </div>
+    </div>
+    <div class="cal-legend" id="cal-legend"></div>
+    <div class="cal-days-header">
+      <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+  <div class="section-title">This Month</div>
+  <div id="cal-month-summary"></div>
+</div>
+
+<div id="sec-goals" class="section">
+  <div id="all-goals"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection(&#39;today&#39;,this)">
+    <span class="nav-icon">◈</span>Today
+  </button>
+  <button class="nav-btn" onclick="showSection(&#39;habits&#39;,this)">
+    <span class="nav-icon">◎</span>Habits
+  </button>
+  <button class="nav-btn" onclick="showSection(&#39;calendar&#39;,this)">
+    <span class="nav-icon">▦</span>Calendar
+  </button>
+  <button class="nav-btn" onclick="showSection(&#39;goals&#39;,this)">
+    <span class="nav-icon">◬</span>Goals
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" id="fab-btn" onclick="openAddModal()">+</button>
+
+<!-- ADD HABIT MODAL -->
+<div class="modal-overlay" id="habit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">New Habit</div>
+    <div class="field-label">Name</div>
+    <input class="field-input" id="h-name" placeholder="e.g. Morning run">
+    <div class="field-label">Icon</div>
+    <div class="emoji-picker" id="h-emoji-picker"></div>
+    <div class="field-label">Color</div>
+    <div class="color-picker" id="h-color-picker"></div>
+    <div class="field-label">Frequency</div>
+    <select class="select-input" id="h-freq">
+      <option value="daily">Every day</option>
+      <option value="weekdays">Weekdays only</option>
+      <option value="weekends">Weekends only</option>
+    </select>
+    <button class="modal-submit" onclick="saveHabit()">Add Habit</button>
+    <button class="modal-cancel" onclick="closeModal(&#39;habit-modal&#39;)">Cancel</button>
+  </div>
+</div>
+
+<!-- ADD GOAL MODAL -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">New Goal</div>
+    <div class="field-label">Name</div>
+    <input class="field-input" id="g-name" placeholder="e.g. Run a 5K">
+    <div class="field-label">Category</div>
+    <div class="cat-pills" id="g-cat-pills"></div>
+    <div class="field-label">Target Date</div>
+    <input class="field-input" id="g-date" type="date">
+    <div class="field-label">Notes</div>
+    <input class="field-input" id="g-notes" placeholder="Optional details...">
+    <button class="modal-submit" onclick="saveGoal()">Add Goal</button>
+    <button class="modal-cancel" onclick="closeModal(&#39;goal-modal&#39;)">Cancel</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────
+const STORE_KEY_H = 'momentum_habits';
+const STORE_KEY_G = 'momentum_goals';
+
+function load(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e) { return []; } }
+function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+let habits = load(STORE_KEY_H);
+let goals = load(STORE_KEY_G);
+
+// ── CONSTANTS ───────────────────────────────────────────────────
+const EMOJIS = ['🏃','💪','📚','🧘','💧','🥗','😴','✍️','🎯','🧹','💊','🎸','🌿','🧠','☕','🚴'];
+const COLORS = [
+  {name:'lime', val:'#c8f060', dim:'rgba(200,240,96,0.18)'},
+  {name:'teal', val:'#5dd4c8', dim:'rgba(93,212,200,0.18)'},
+  {name:'amber', val:'#f0a030', dim:'rgba(240,160,48,0.18)'},
+  {name:'coral', val:'#f06060', dim:'rgba(240,96,96,0.18)'},
+  {name:'blue', val:'#60a8f0', dim:'rgba(96,168,240,0.18)'},
+  {name:'purple', val:'#a080f0', dim:'rgba(160,128,240,0.18)'},
+  {name:'pink', val:'#f060a8', dim:'rgba(240,96,168,0.18)'},
+  {name:'white', val:'#e0dfd8', dim:'rgba(224,223,216,0.18)'},
+];
+const CATS = ['Health','Learning','Finance','Career','Creative','Personal'];
+const CAT_COLORS = { Health:'#5dd4c8', Learning:'#60a8f0', Finance:'#c8f060', Career:'#a080f0', Creative:'#f06060', Personal:'#f0a030' };
+const DAYS_SHORT = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let selectedEmoji = EMOJIS[0];
+let selectedColor = COLORS[0];
+let selectedCat = CATS[0];
+let calYear, calMonth;
+
+const today = new Date();
+const todayStr = dateStr(today);
+
+function dateStr(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function parseDate(s) { const [y,m,d] = s.split('-'); return new Date(+y,+m-1,+d); }
+
+// ── DATE PILL ───────────────────────────────────────────────────
+document.getElementById('date-pill').textContent = today.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+// ── NAV ─────────────────────────────────────────────────────────
+let curSection = 'today';
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  curSection = name;
+  if(name==='calendar') renderCalendar();
+  if(name==='today') renderToday();
+  if(name==='habits') renderAllHabits();
+  if(name==='goals') renderAllGoals();
+}
+
+// ── MODAL ───────────────────────────────────────────────────────
+function openAddModal() {
+  if(curSection==='goals') openModal('goal-modal');
+  else openModal('habit-modal');
+}
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if(id==='habit-modal') buildHabitModal();
+  if(id==='goal-modal') buildGoalModal();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+function buildHabitModal() {
+  selectedEmoji = EMOJIS[0]; selectedColor = COLORS[0];
+  document.getElementById('h-name').value='';
+  const ep = document.getElementById('h-emoji-picker');
+  ep.innerHTML = EMOJIS.map(e=>`<div class="emoji-opt${e===selectedEmoji?' selected':''}" onclick="selEmoji(this,'${e}')">${e}</div>`).join('');
+  const cp = document.getElementById('h-color-picker');
+  cp.innerHTML = COLORS.map((c,i)=>`<div class="color-opt${i===0?' selected':''}" style="background:${c.val}" onclick="selColor(this,${i})"></div>`).join('');
+}
+
+function selEmoji(el, e) {
+  selectedEmoji = e;
+  document.querySelectorAll('.emoji-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function selColor(el, i) {
+  selectedColor = COLORS[i];
+  document.querySelectorAll('.color-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function buildGoalModal() {
+  selectedCat = CATS[0];
+  document.getElementById('g-name').value='';
+  document.getElementById('g-notes').value='';
+  document.getElementById('g-date').value='';
+  const min = new Date(); min.setDate(min.getDate()+1);
+  document.getElementById('g-date').min = dateStr(min);
+  const cp = document.getElementById('g-cat-pills');
+  cp.innerHTML = CATS.map(c=>`<div class="cat-pill${c===selectedCat?' selected':''}" onclick="selCat(this,'${c}')">${c}</div>`).join('');
+}
+function selCat(el,c) {
+  selectedCat=c;
+  document.querySelectorAll('.cat-pill').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── SAVE HABIT ──────────────────────────────────────────────────
+function saveHabit() {
+  const name = document.getElementById('h-name').value.trim();
+  if(!name) { document.getElementById('h-name').focus(); return; }
+  const freq = document.getElementById('h-freq').value;
+  habits.push({ id: Date.now(), name, emoji: selectedEmoji, color: selectedColor.val, colorDim: selectedColor.dim, freq, completions: {} });
+  save(STORE_KEY_H, habits);
+  closeModal('habit-modal');
+  renderToday(); renderAllHabits();
+}
+
+// ── SAVE GOAL ───────────────────────────────────────────────────
+function saveGoal() {
+  const name = document.getElementById('g-name').value.trim();
+  if(!name) { document.getElementById('g-name').focus(); return; }
+  const targetDate = document.getElementById('g-date').value;
+  const notes = document.getElementById('g-notes').value.trim();
+  goals.push({ id: Date.now(), name, cat: selectedCat, targetDate, notes, progress: 0, createdAt: todayStr });
+  save(STORE_KEY_G, goals);
+  closeModal('goal-modal');
+  renderToday(); renderAllGoals();
+}
+
+// ── TOGGLE COMPLETION ───────────────────────────────────────────
+function toggleHabit(id, dateKey) {
+  const h = habits.find(x=>x.id===id);
+  if(!h) return;
+  if(!h.completions) h.completions = {};
+  h.completions[dateKey] = !h.completions[dateKey];
+  if(!h.completions[dateKey]) delete h.completions[dateKey];
+  save(STORE_KEY_H, habits);
+  renderToday(); renderAllHabits();
+  if(curSection==='calendar') renderCalendar();
+}
+
+function updateGoalProgress(id, val) {
+  const g = goals.find(x=>x.id===id);
+  if(!g) return;
+  g.progress = Math.max(0, Math.min(100, val));
+  save(STORE_KEY_G, goals);
+  renderToday(); renderAllGoals();
+}
+
+function deleteHabit(id) {
+  habits = habits.filter(x=>x.id!==id);
+  save(STORE_KEY_H, habits);
+  renderToday(); renderAllHabits();
+  if(curSection==='calendar') renderCalendar();
+}
+function deleteGoal(id) {
+  goals = goals.filter(x=>x.id!==id);
+  save(STORE_KEY_G, goals);
+  renderToday(); renderAllGoals();
+}
+
+// ── STREAK ──────────────────────────────────────────────────────
+function getStreak(h) {
+  let streak = 0, d = new Date(today);
+  while(true) {
+    const k = dateStr(d);
+    if(k===todayStr && !h.completions[k]) { d.setDate(d.getDate()-1); continue; }
+    if(h.completions[k]) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+// ── WEEK DAYS ───────────────────────────────────────────────────
+function getWeekDays() {
+  const days = [];
+  const start = new Date(today);
+  start.setDate(today.getDate() - today.getDay() + 1); // Monday
+  for(let i=0;i<7;i++) {
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    days.push({ date: d, key: dateStr(d), label: ['M','T','W','T','F','S','S'][i] });
+  }
+  return days;
+}
+
+// ── RENDER TODAY ─────────────────────────────────────────────────
+function renderToday() {
+  // Stats
+  const doneToday = habits.filter(h=>h.completions && h.completions[todayStr]).length;
+  const bestStreak = habits.length ? Math.max(...habits.map(h=>getStreak(h))) : 0;
+  const goalsActive = goals.filter(g=>g.progress<100).length;
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card"><div class="stat-val">${doneToday}/${habits.length}</div><div class="stat-lbl">Today</div></div>
+    <div class="stat-card"><div class="stat-val">${bestStreak}</div><div class="stat-lbl">Best streak</div></div>
+    <div class="stat-card"><div class="stat-val">${goalsActive}</div><div class="stat-lbl">Goals active</div></div>
+  `;
+
+  // Today habits
+  const th = document.getElementById('today-habits');
+  if(!habits.length) {
+    th.innerHTML = '<div class="empty-state"><div class="empty-icon">◎</div><div class="empty-title">No habits yet</div><div class="empty-sub">Tap + to add your first habit</div></div>';
+  } else {
+    const weekDays = getWeekDays();
+    th.innerHTML = habits.map(h=>{
+      const done = h.completions && h.completions[todayStr];
+      const streak = getStreak(h);
+      return `<div class="card habit-card" style="${done?'border-color:'+h.color+';background:linear-gradient(135deg,'+h.colorDim+',transparent)':''}">
+        <div class="habit-top">
+          <div class="habit-icon" style="background:${h.colorDim}">${h.emoji}</div>
+          <div class="habit-name">${h.name}</div>
+          ${streak>0?`<div class="habit-streak"><span class="streak-flame">🔥</span> ${streak}</div>`:''}
+        </div>
+        <div class="week-row">
+          ${weekDays.map(wd=>{
+            const isDone = h.completions && h.completions[wd.key];
+            const isTod = wd.key===todayStr;
+            return `<div class="week-dot${isDone?' done':''}${isTod?' today':''}" onclick="toggleHabit(${h.id},'${wd.key}')" title="${wd.label}"></div>`;
+          }).join('')}
+        </div>
+        <div class="prog-wrap"><div class="prog-bar" style="width:${Math.round(weekDays.filter(d=>h.completions&&h.completions[d.key]).length/7*100)}%;background:${h.color}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Today goals
+  const tg = document.getElementById('today-goals');
+  if(!goals.length) {
+    tg.innerHTML = '<div class="empty-state"><div class="empty-icon">◬</div><div class="empty-title">No goals yet</div><div class="empty-sub">Switch to Goals tab and tap + to add one</div></div>';
+  } else {
+    tg.innerHTML = goals.map(g=>goalCardHTML(g, true)).join('');
+  }
+}
+
+// ── GOAL CARD ───────────────────────────────────────────────────
+function goalCardHTML(g, compact) {
+  const cc = CAT_COLORS[g.cat] || '#c8f060';
+  const cdim = cc+'28';
+  let etaText = '';
+  if(g.targetDate) {
+    const td = parseDate(g.targetDate);
+    const diff = Math.ceil((td - today) / 86400000);
+    if(diff < 0) etaText = `<span style="color:var(--coral)">Overdue by ${Math.abs(diff)}d</span>`;
+    else if(diff===0) etaText = `<span style="color:var(--accent)">Due today!</span>`;
+    else {
+      const remaining = 100 - g.progress;
+      const daysNeeded = diff;
+      etaText = `${diff} days left`;
+      if(g.progress<100 && remaining>0 && daysNeeded>0) {
+        const dailyNeeded = (remaining/daysNeeded).toFixed(1);
+        etaText += ` · ~${dailyNeeded}% per day`;
+      }
+    }
+  }
+  return `<div class="card goal-card">
+    <div class="goal-header">
+      <div class="goal-info">
+        <div class="goal-name">${g.name}</div>
+        ${g.notes?`<div class="goal-sub">${g.notes}</div>`:''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <span class="goal-cat" style="background:${cdim};color:${cc}">${g.cat}</span>
+        <button class="delete-btn" onclick="deleteGoal(${g.id})">✕</button>
+      </div>
+    </div>
+    <div class="goal-timeline">
+      <div class="timeline-bar-wrap"><div class="timeline-bar" style="width:${g.progress}%;background:${cc}"></div></div>
+      <div class="goal-pct" style="color:${cc}">${g.progress}%</div>
+    </div>
+    ${etaText?`<div class="goal-eta"><div class="eta-dot" style="background:${cc}"></div>${etaText}</div>`:''}
+    <div class="progress-input-row">
+      <button class="prog-btn" onclick="adjustGoal(${g.id},-10)">−</button>
+      <input class="prog-num" type="number" min="0" max="100" value="${g.progress}" onchange="updateGoalProgress(${g.id},+this.value)" />
+      <button class="prog-btn" onclick="adjustGoal(${g.id},10)">+</button>
+    </div>
+  </div>`;
+}
+
+function adjustGoal(id, delta) {
+  const g = goals.find(x=>x.id===id);
+  if(g) updateGoalProgress(id, g.progress+delta);
+}
+
+// ── RENDER ALL HABITS ────────────────────────────────────────────
+function renderAllHabits() {
+  const el = document.getElementById('all-habits');
+  if(!habits.length) {
+    el.innerHTML = '<div class="section-title">All Habits</div><div class="empty-state"><div class="empty-icon">◎</div><div class="empty-title">No habits yet</div><div class="empty-sub">Tap + to add your first habit</div></div>';
+    return;
+  }
+  const weekDays = getWeekDays();
+  el.innerHTML = '<div class="section-title">All Habits</div>' + habits.map(h=>{
+    const streak = getStreak(h);
+    const totalDone = Object.keys(h.completions||{}).length;
+    return `<div class="card habit-card">
+      <div class="habit-top">
+        <div class="habit-icon" style="background:${h.colorDim}">${h.emoji}</div>
+        <div>
+          <div class="habit-name">${h.name}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:1px">${h.freq} · ${totalDone} total completions</div>
+        </div>
+        <button class="delete-btn" onclick="deleteHabit(${h.id})">✕</button>
+      </div>
+      ${streak>0?`<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px"><span style="font-size:20px">🔥</span><span style="color:${h.color};font-size:14px;font-weight:600">${streak} day streak</span></div>`:''}
+      <div class="week-row">
+        ${weekDays.map(wd=>{
+          const isDone = h.completions && h.completions[wd.key];
+          const isTod = wd.key===todayStr;
+          return `<div class="week-dot${isDone?' done':''}${isTod?' today':''}" onclick="toggleHabit(${h.id},'${wd.key}')" title="${wd.label}"></div>`;
+        }).join('')}
+      </div>
+      <div class="prog-wrap" style="margin-top:8px"><div class="prog-bar" style="width:${Math.round(weekDays.filter(d=>h.completions&&h.completions[d.key]).length/7*100)}%;background:${h.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── RENDER ALL GOALS ─────────────────────────────────────────────
+function renderAllGoals() {
+  const el = document.getElementById('all-goals');
+  if(!goals.length) {
+    el.innerHTML = '<div class="section-title">All Goals</div><div class="empty-state"><div class="empty-icon">◬</div><div class="empty-title">No goals yet</div><div class="empty-sub">Tap + to add your first goal</div></div>';
+    return;
+  }
+  el.innerHTML = '<div class="section-title">All Goals</div>' + goals.map(g=>goalCardHTML(g,false)).join('');
+}
+
+// ── CALENDAR ─────────────────────────────────────────────────────
+calYear = today.getFullYear(); calMonth = today.getMonth();
+
+function calNav(dir) { calMonth+=dir; if(calMonth>11){calMonth=0;calYear++;} if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+
+function renderCalendar() {
+  document.getElementById('cal-month-title').textContent = MONTHS[calMonth]+' '+calYear;
+
+  // Legend
+  const lg = document.getElementById('cal-legend');
+  lg.innerHTML = habits.slice(0,5).map(h=>`<div class="legend-item"><div class="legend-dot" style="background:${h.color}"></div>${h.name}</div>`).join('');
+
+  const grid = document.getElementById('cal-grid');
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+  let cells = '';
+  // Prev month
+  for(let i=firstDay-1;i>=0;i--) {
+    cells += `<div class="cal-day other-month">${daysInPrev-i}</div>`;
+  }
+  // This month
+  for(let d=1;d<=daysInMonth;d++) {
+    const key = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday = key===todayStr;
+    const doneDots = habits.filter(h=>h.completions&&h.completions[key]);
+    const hasDone = doneDots.length>0;
+    cells += `<div class="cal-day${isToday?' today':''}${hasDone?' has-done':''}">
+      ${d}
+      ${doneDots.length?`<div class="cal-day-dots">${doneDots.slice(0,4).map(h=>`<div class="cal-dot" style="background:${h.color}"></div>`).join('')}</div>`:''}
+    </div>`;
+  }
+  // Next month
+  const total = firstDay + daysInMonth;
+  const remaining = total%7===0?0:7-(total%7);
+  for(let i=1;i<=remaining;i++) cells+=`<div class="cal-day other-month">${i}</div>`;
+
+  grid.innerHTML = cells;
+
+  // Month summary
+  const summaryEl = document.getElementById('cal-month-summary');
+  if(!habits.length) { summaryEl.innerHTML=''; return; }
+
+  summaryEl.innerHTML = habits.map(h=>{
+    let monthDone=0;
+    for(let d=1;d<=daysInMonth;d++) {
+      const key = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      if(h.completions&&h.completions[key]) monthDone++;
+    }
+    const pct = Math.round(monthDone/daysInMonth*100);
+    return `<div class="card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="background:${h.colorDim};width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">${h.emoji}</div>
+        <div style="flex:1;font-size:14px;font-weight:500">${h.name}</div>
+        <div style="font-size:13px;font-weight:600;color:${h.color}">${monthDone}/${daysInMonth} days</div>
+      </div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${pct}%;background:${h.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderToday();
+</script>
+
+
+</body></html>
